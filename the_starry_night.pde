@@ -10,7 +10,7 @@ void setup() {
   String city = "Miami";
   String apiKey = "INSERT_API_KEY";
   JSONObject json = loadJSONObject(url + city + "&appid=" + apiKey);
-  int code = 200;//(int)(json.getJSONArray("weather").getJSONObject(0).get("id"));
+  int code = (int)(json.getJSONArray("weather").getJSONObject(0).get("id"));
   print(json);
   if(code == 800) {
     img = loadImage("a_starry_night.jpg");
