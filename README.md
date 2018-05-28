@@ -1,7 +1,7 @@
 # the-starry-night
 Weather visualizer based on Vincent Van Gogh's "The Starry Night"
 
-##Usage
+## Usage
 * Obtain API Key from https://www.openweathermap.org/api
 * Set variable apiKey in the_starry_night.pde
 
