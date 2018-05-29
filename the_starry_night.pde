@@ -1,53 +1,74 @@
 import processing.sound.*;
 
 PImage img;
-boolean isRain = false;
-boolean isLightning = false;
-boolean isSnow = false;
+boolean isRain;
+boolean isLightning;
+boolean isSnow;
+int ctr = 0;
+int[] codes = new int[] {800, 801, 700, 600, 500, 300, 200};
+int code = 600;
+SoundFile wind;
+SoundFile crickets;
+SoundFile rain;
+SoundFile lightning;
 void setup() {
+  String apiKey = loadStrings("apikey.txt")[0];
+  wind = new SoundFile(this, "wind.wav");
+  crickets = new SoundFile(this, "crickets.wav");
+  rain = new SoundFile(this, "rain.wav");
+  lightning = new SoundFile(this, "lightning.wav");
   size(1280,800);
   String url = "https://api.openweathermap.org/data/2.5/weather?q=";
-  String city = "Miami";
-  String apiKey = "INSERT_API_KEY";
+  String city = "Seattle";
   JSONObject json = loadJSONObject(url + city + "&appid=" + apiKey);
-  int code = (int)(json.getJSONArray("weather").getJSONObject(0).get("id"));
+  //code = (int)(json.getJSONArray("weather").getJSONObject(0).get("id"));
+  code = codes[ctr];
   print(json);
   if(code == 800) {
     img = loadImage("a_starry_night.jpg");
+    isRain = false;
+    isSnow = false;
+    isLightning = false;
   } else if(code > 800) {
     img = loadImage("a_cloudy_night.jpg");
+    isRain = false;
+    isSnow = false;
+    isLightning = false;
   }
   else if(code >= 700) {
     img = loadImage("a_cloudy_night2.jpg");
+    isRain = false;
+    isSnow = false;
+    isLightning = false;
   } else if(code >= 600) {
     img = loadImage("a_snowy_night.jpg");
+    isRain = false;
+    isLightning = false;
     isSnow = true;
   } else if(code >= 300){
     img = loadImage("a_cloudy_night.jpg");
     isRain = true;
+    isSnow = false;
+    isLightning = false;
   } else {
     img = loadImage("a_cloudy_night.jpg");
     isRain = true;
+    isSnow = false;
     isLightning = true;
   }
   //wind
-  SoundFile wind = new SoundFile(this, "wind.wav");
+  
   wind.loop();
   wind.amp(0.5);
-  if(!isRain && !isLightning && !isSnow) {
-    //crickets
-    new SoundFile(this, "crickets.wav").loop();
+  if(code == 800) {
+    crickets.loop();
   }
   if(isRain) {
-    //rain
-    new SoundFile(this, "rain.wav").loop();
+    rain.loop();
   }
   if(isLightning) {
-    //lightning
-    new SoundFile(this, "lightning.wav").loop();
-    
+    lightning.loop();    
   }
-  background(0);
   for(int i = 0; i < 10000; i++) {
   float x = random(width);
   float y = random(height);
@@ -76,6 +97,19 @@ void draw() {
   
   if(isSnow) {
     snow();
+  }
+  //println(frameCount);
+  if(frameCount % 600 == 0) {
+    //code = 200;
+    wind.stop();
+    crickets.stop();
+    rain.stop();
+    lightning.stop();
+    ctr++;
+    if(ctr >= codes.length) {
+      ctr = 0;
+    }
+    setup();
   }
 }
 
